@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Open WiFi Admin Panel</title>
+<style>
+  /* Reset & base */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+  }
+  .container {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 40px 50px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    width: 320px;
+    text-align: center;
+  }
+  h2 {
+    margin-bottom: 30px;
+    font-weight: 700;
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+  }
+  select, input[type="text"] {
+    width: 100%;
+    padding: 14px 20px;
+    border-radius: 10px;
+    border: none;
+    margin-bottom: 20px;
+    font-size: 1rem;
+    outline: none;
+    color: #333;
+    background: #fff;
+    transition: box-shadow 0.3s ease;
+  }
+  select:focus, input[type="text"]:focus {
+    box-shadow: 0 0 8px 2px #667eea;
+  }
+  input[type="text"] {
+    display: none;
+  }
+  button {
+    width: 100%;
+    padding: 15px 0;
+    border-radius: 10px;
+    border: none;
+    background: #5a67d8;
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(90, 103, 216, 0.7);
+    transition: background 0.3s ease;
+  }
+  button:hover {
+    background: #434190;
+    box-shadow: 0 6px 20px rgba(67, 65, 144, 0.9);
+  }
+  /* Show input if needed */
+  #customIpInput.show {
+    display: block;
+  }
+  /* Small info text */
+  .info-text {
+    font-size: 0.85rem;
+    color: #d1d5db;
+    margin-top: -15px;
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h2>OPEN WIFI ADMIN PANEL</h2>
+    <select id="gatewaySelect" onchange="handleSelectChange()">
+      <option value="">Select Router IP</option>
+      <option value="1.2.2.1">1.2.2.1</option>
+      <option value="192.168.0.1">192.168.0.1</option>
+      <option value="192.168.1.1">192.168.1.1</option>
+      <option value="192.168.1.254">192.168.1.254</option>
+      <option value="192.168.100.1">192.168.100.1</option>
+      <option value="10.0.0.1">10.0.0.1</option>
+      <option value="custom">-- Custom IP --</option>
+    </select>
+    <input
+      type="text"
+      id="customIpInput"
+      placeholder="Enter custom router IP"
+      autocomplete="off"
+      spellcheck="false"
+    />
+    <div class="info-text">Select your router’s IP or enter a custom one</div>
+    <button onclick="openAdminPanel()">OPEN ADMIN PANEL</button>
+  </div>
+
+<script>
+  const select = document.getElementById('gatewaySelect');
+  const customIpInput = document.getElementById('customIpInput');
+
+  function handleSelectChange() {
+    if (select.value === 'custom') {
+      customIpInput.classList.add('show');
+      customIpInput.focus();
+    } else {
+      customIpInput.classList.remove('show');
+      customIpInput.value = '';
+    }
+  }
+
+  function isValidIp(ip) {
+    const regex = /^(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)){3}$/;
+    return regex.test(ip);
+  }
+
+  function openAdminPanel() {
+    let ip = select.value;
+    if (ip === '') {
+      alert('Please select your WiFi router IP');
+      return;
+    }
+    if (ip === 'custom') {
+      ip = customIpInput.value.trim();
+      if (!ip) {
+        alert('Please enter a custom router IP');
+        customIpInput.focus();
+        return;
+      }
+      if (!isValidIp(ip)) {
+        alert('Please enter a valid IPv4 address');
+        customIpInput.focus();
+        return;
+      }
+    }
+    const url = `http://${ip}`;
+    window.open(url, '_blank');
+  }
+</script>
+</body>
+</html>
